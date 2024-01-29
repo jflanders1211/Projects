@@ -1,0 +1,251 @@
+package Project;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+import javafx.scene.text.Text;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
+
+public class Yahtzee extends Game {
+
+    public Yahtzee(Player player1, Player player2)
+    {
+        super(player1, player2);
+    }
+
+    public void Play(Stage primaryStage)
+    {
+        
+        primaryStage.setTitle("Yahtzee");
+
+        //------------------Upper Part of scorecard----------------------//
+
+        // Creating buttons for the upper part of the scorecard
+        // Includes Ones - Sixes
+        Button Ace = new Button("Aces");
+        Ace.setPrefSize(100, 30);
+
+        Button Two = new Button("Twos");
+        Two.setPrefSize(100, 30);
+
+        Button Three = new Button("Threes");
+        Three.setPrefSize(100, 30);
+
+        Button Four = new Button("Fours");
+        Four.setPrefSize(100, 30);
+
+        Button Five = new Button("Fives");
+        Five.setPrefSize(100, 30);
+
+        Button Six = new Button("Sixes");
+        Six.setPrefSize(100, 30);
+
+        // Creating textFields to correlate with every button
+        // which will store in the scores for each category
+        TextField acePts = new TextField();
+        acePts.setPrefSize(50, 30);
+
+        TextField twoPts = new TextField();
+        twoPts.setPrefSize(50, 30);
+
+        TextField threePts = new TextField();
+        threePts.setPrefSize(50, 30);
+
+        TextField fourPts = new TextField();
+        fourPts.setPrefSize(50, 30);
+
+        TextField fivePts = new TextField();
+        fivePts.setPrefSize(50, 30);
+
+        TextField sixPts = new TextField();
+        sixPts.setPrefSize(50, 30);
+
+
+        // Creating a bold Upper Total text, to match the Yahtzee scorecard
+        Text upperTotal = new Text("Upper Total");
+        GridPane.setHalignment(upperTotal, HPos.CENTER);
+        upperTotal.setStyle("-fx-font-weight: bold");
+        GridPane.setConstraints(upperTotal,0,7);
+
+        // Creating a textField for the upper score
+        TextField upperTotalPts = new TextField();
+        upperTotalPts.setPrefSize(50, 30);
+        GridPane.setConstraints(upperTotalPts, 1, 7);
+
+        // Creating a bold Bonus text, to match the Yahtzee scorecard
+        Text bonus = new Text("Bonus");
+        GridPane.setHalignment(bonus, HPos.CENTER);
+        bonus.setStyle("-fx-font-weight: bold");
+        GridPane.setConstraints(bonus,0,8);
+
+        // Creating a textField for the bonus score
+        TextField bonusPts = new TextField();
+        bonusPts.setPrefSize(50, 30);
+        GridPane.setConstraints(bonusPts, 1, 8);
+
+        // Align all the buttons in the upper part for the GridPane
+        GridPane.setConstraints(Two, 0, 2);
+        GridPane.setConstraints(Three, 0, 3);
+        GridPane.setConstraints(Four, 0, 4);
+        GridPane.setConstraints(Five, 0, 5);
+        GridPane.setConstraints(Six, 0, 6);
+
+        // Align all the textFields in the upper part for GridPane
+        GridPane.setConstraints(acePts, 1, 0);
+        GridPane.setConstraints(twoPts, 1, 2);
+        GridPane.setConstraints(threePts, 1, 3);
+        GridPane.setConstraints(fourPts, 1, 4);
+        GridPane.setConstraints(fivePts, 1, 5);
+        GridPane.setConstraints(sixPts, 1, 6);
+
+
+        //------------------Lower Part of scorecard----------------------//
+
+
+        // Creating all the buttons for the bottom part of the scorecard
+        Button threeOfAKind = new Button("3 of a kind");
+        threeOfAKind.setPrefSize(100, 30);
+
+        Button fourOfAKind = new Button("4 of a kind");
+        fourOfAKind.setPrefSize(100, 30);
+
+        Button fullHouse = new Button("Full house");
+        fullHouse.setPrefSize(100, 30);
+
+        Button smallStraight = new Button("Sm. straight");
+        smallStraight.setPrefSize(100, 30);
+
+        Button largeStraight = new Button("Lg. straight");
+        largeStraight.setPrefSize(100, 30);
+
+        Button yahtzee = new Button("Yahtzee");
+        yahtzee.setPrefSize(100, 30);
+
+        Button chance = new Button("Chance");
+        chance.setPrefSize(100, 30);
+
+
+        // Creating textFields to correlate with every button
+        // which will store in the scores for each category
+        TextField threeOfAKindPts = new TextField();
+        threeOfAKindPts.setPrefSize(50, 30);
+
+        TextField fourOfAKindPts = new TextField();
+        fourOfAKindPts.setPrefSize(50, 30);
+
+        TextField fullHousePts = new TextField();
+        fullHousePts.setPrefSize(50, 30);
+
+        TextField smallStraightPts = new TextField();
+        smallStraightPts.setPrefSize(50, 30);
+
+        TextField largeStraightPts = new TextField();
+        largeStraightPts.setPrefSize(50, 30);
+
+        TextField yahtzeePts = new TextField();
+        yahtzeePts.setPrefSize(50, 30);
+
+        TextField chancePts = new TextField();
+        chancePts.setPrefSize(50, 30);
+
+        // Creating a bold Lower Total text, to match the Yahtzee scorecard
+        Text lowerTotal = new Text("Lower Total");
+        GridPane.setHalignment(lowerTotal, HPos.CENTER);
+        lowerTotal.setStyle("-fx-font-weight: bold");
+        GridPane.setConstraints(lowerTotal,0,16);
+
+        // Creating a textField for the lower score
+        TextField lowerTotalPts = new TextField();
+        lowerTotalPts.setPrefSize(50, 30);
+        GridPane.setConstraints(lowerTotalPts, 1, 16);
+
+        // Creating a bold Grand Total text, to match the Yahtzee scorecard
+        Text grandTotal = new Text("Grand Total");
+        GridPane.setHalignment(grandTotal, HPos.CENTER);
+        grandTotal.setStyle("-fx-font-weight: bold");
+        GridPane.setConstraints(grandTotal,0,17);
+
+        // Creating a textField for the grand score
+        TextField grandTotalPts = new TextField();
+        grandTotalPts.setPrefSize(50, 30);
+        GridPane.setConstraints(grandTotalPts, 1, 17);
+
+        // Align all the buttons in the lower part for the GridPane
+        GridPane.setConstraints(threeOfAKind, 0, 9);
+        GridPane.setConstraints(fourOfAKind, 0, 10);
+        GridPane.setConstraints(fullHouse, 0, 11);
+        GridPane.setConstraints(smallStraight, 0, 12);
+        GridPane.setConstraints(largeStraight, 0, 13);
+        GridPane.setConstraints(yahtzee, 0, 14);
+        GridPane.setConstraints(chance, 0, 15);
+
+        // Align all the textFields in the lower part for GridPane
+        GridPane.setConstraints(threeOfAKindPts, 1, 9);
+        GridPane.setConstraints(fourOfAKindPts, 1, 10);
+        GridPane.setConstraints(fullHousePts, 1, 11);
+        GridPane.setConstraints(smallStraightPts, 1, 12);
+        GridPane.setConstraints(largeStraightPts, 1, 13);
+        GridPane.setConstraints(yahtzeePts, 1, 14);
+        GridPane.setConstraints(chancePts, 1, 15);
+
+
+        //------------------Settings for the GridPane----------------------//
+
+
+        // Setting up the size and layout of the GridPane
+        GridPane layout = new GridPane();
+        layout.setPrefSize(1280, 720);
+        layout.setPadding(new Insets(75, 100, 100, 100));
+
+        // Include all components for scorecard in GridPanel
+        layout.getChildren().addAll(Ace, Two, Three, Four, Five, Six, acePts, twoPts, threePts,
+                fourPts, fivePts, sixPts, upperTotal, upperTotalPts, bonus, bonusPts,
+                threeOfAKind, fourOfAKind, fullHouse, smallStraight, largeStraight,
+                yahtzee, chance, threeOfAKindPts, fourOfAKindPts, fullHousePts, smallStraightPts,
+                largeStraightPts, yahtzeePts, chancePts, lowerTotal, lowerTotalPts,
+                grandTotal, grandTotalPts);
+
+        // Creating the Scene and adding the GridPane to it
+        Scene scene = new Scene(layout, 1280, 720);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+
+
+        // Creating an array to hold 5 die objects
+        Die[] dice = new Die[5];
+
+        // Creating 5 die objects
+        for(int i = 0; i < 5; i++)
+        {
+            dice[i] = new Die();
+        }
+    }
+
+
+    boolean isWin()
+    {
+        // Place holder
+        return false;
+    }
+
+    void takeTurn(int input[])
+    {
+
+
+    }
+}

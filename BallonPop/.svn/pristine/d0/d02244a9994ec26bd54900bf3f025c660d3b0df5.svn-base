@@ -1,0 +1,20 @@
+#include "GameObjects.h"
+#include <iostream>
+using namespace std;
+
+
+void RedBalloon::Move()
+{
+   y -= RedBalloonSpeed;
+}
+
+int RedBalloon::popScore()
+{
+   return this->RedBalloonScore;
+}
+
+int RedBalloon::typeOfObject()
+{
+   // Red balloons trypes are stored with the value 1
+   return 1;
+}
