@@ -1,0 +1,221 @@
+package Project;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.animation.TranslateTransition;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Reflection;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.util.Duration;
+
+import javax.swing.*;
+
+public class ConnectFour extends Game {
+
+    private int grid[][] = new int[6][7];
+    private int row = 6;
+    private int col = 7;
+    int hasWon = -1;
+    int playerTurn = 1;
+    private SimpleObjectProperty<Color> playerColorProperty = new SimpleObjectProperty<Color>(Color.RED);
+
+    public ConnectFour(Player player1, Player player2) {
+        super(player1, player2);
+    }
+
+    // play the game
+    void play(Stage primaryStage) {
+        //----------------------------Create the Playing Area----------------------------\\
+
+        Button Exit = new Button("Exit");
+        Button mainScreen = new Button("Main Screen");
+        Button Forfeit = new Button("Forfeit");
+
+        BorderPane root = new BorderPane();
+
+        HBox hbox = new HBox();
+        hbox.setSpacing(548);
+        hbox.getChildren().addAll(mainScreen, Forfeit, Exit);
+        root.setTop(hbox);
+
+        GridPane gridpane = new GridPane();
+        gridpane.setAlignment(Pos.CENTER);
+
+        primaryStage.setResizable(true);
+
+        Scene scene = new Scene(root, 1280, 720);
+        scene.setFill(Color.ANTIQUEWHITE);
+
+        gridpane.getColumnConstraints().addAll(
+                new ColumnConstraints(75, 75, Double.MAX_VALUE),  //column 1
+                new ColumnConstraints(75, 75, Double.MAX_VALUE),  //column 2
+                new ColumnConstraints(75, 75, Double.MAX_VALUE),  //column 3
+                new ColumnConstraints(75, 75, Double.MAX_VALUE),  //column 4
+                new ColumnConstraints(75, 75, Double.MAX_VALUE),  //column 5
+                new ColumnConstraints(75, 75, Double.MAX_VALUE),  //column 6
+                new ColumnConstraints(75, 75, Double.MAX_VALUE)); //column 7
+
+        gridpane.getRowConstraints().addAll(
+                new RowConstraints(75, 75, Double.MAX_VALUE),  //row 1
+                new RowConstraints(75, 75, Double.MAX_VALUE),  //row 2
+                new RowConstraints(75, 75, Double.MAX_VALUE),  //row 3
+                new RowConstraints(75, 75, Double.MAX_VALUE),  //row 4
+                new RowConstraints(75, 75, Double.MAX_VALUE),  //row 5
+                new RowConstraints(75, 75, Double.MAX_VALUE)); //row 6
+
+        for (int r = 0; r < row; r++) {
+            for (int c = 0; c < col; c++) {
+                int[] temp = {c, r};
+                Rectangle rect = new Rectangle(75, 75);
+                Circle circ = new Circle(35);
+                circ.centerXProperty().set(37.5);
+                circ.centerYProperty().set(37.5);
+                Shape cell = Path.subtract(rect, circ);
+                cell.setFill(Color.BLUE);
+                cell.setStroke(Color.BLUE);
+                cell.setOpacity(.8);
+                DropShadow effect = new DropShadow();
+                effect.setSpread(.2);
+                effect.setRadius(17);
+                effect.setColor(Color.BLUE);
+                cell.setEffect(effect);
+
+                //create the shape/object for the preview disks
+                final Circle diskPreview = new Circle(35);
+                diskPreview.setOpacity(.5);
+                diskPreview.setFill(Color.TRANSPARENT);
+
+                //Make the preview visible when mousing over a potential disk to play
+                diskPreview.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent arg0) {
+                        diskPreview.setFill(Color.WHITE);
+                        if (playerColorProperty.get() == Color.RED) {
+                            diskPreview.setFill(Color.RED);
+                        } else {
+                            diskPreview.setFill(Color.YELLOW);
+                        }
+                    }
+                });
+
+                //Make the preview disk transparent again
+                diskPreview.setOnMouseExited(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent arg0) {
+                        diskPreview.setFill(Color.TRANSPARENT);
+                    }
+                });
+
+                //create the shape/object for the actual playing disk
+                final Circle disk = new Circle(35);
+                disk.fillProperty().bind(playerColorProperty);
+                disk.setOpacity(.5);
+                disk.setTranslateY(-(75 * (r + 1)));
+
+
+                final TranslateTransition translateTranstion = new TranslateTransition(Duration.millis(300), disk);
+
+                disk.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent arg0) {
+                        diskPreview.setFill(Color.WHITE);
+                        if (playerColorProperty.get() == Color.RED) {
+                            diskPreview.setFill(Color.RED);
+                        } else {
+                            diskPreview.setFill(Color.YELLOW);
+                        }
+                    }
+                });
+
+                disk.setOnMouseExited(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent arg0) {
+                        diskPreview.setFill(Color.TRANSPARENT);
+                    }
+                });
+
+                disk.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent arg0) {
+                        if (disk.getTranslateY() != 0) {
+                            translateTranstion.setToY(0);
+                            translateTranstion.play();
+                            if (playerColorProperty.get() == Color.RED) {
+                                playerColorProperty.set(Color.YELLOW);
+                                disk.fillProperty().bind(new SimpleObjectProperty<Color>(Color.RED));
+                            } else {
+                                playerColorProperty.set(Color.RED);
+                                disk.fillProperty().bind(new SimpleObjectProperty<Color>(Color.YELLOW));
+                            }
+                        }
+
+                        takeTurn(temp);
+
+                        if (isWin()) {
+                            if (playerTurn == 1)
+                                hasWon = 1;
+                            if (playerTurn == 2)
+                                hasWon = 2;
+                        }
+                    }
+                });
+
+                StackPane stack = new StackPane();
+                stack.getChildren().addAll(cell, diskPreview, disk);
+                gridpane.add(stack, c, r);
+
+                if (r == gridpane.getColumnConstraints().size() - 1) {
+                    stack.setEffect(new Reflection());
+                }
+            }
+        }
+
+        root.setCenter(gridpane);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+        //Close the application if an "Exit" button from any screen is clicked
+        EventHandler<MouseEvent> exitProgram = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                Platform.exit();
+            }
+        };
+        Exit.addEventFilter(MouseEvent.MOUSE_CLICKED, exitProgram);
+
+        //--------------------------------------------------------------------------------\\
+
+    }
+
+    //check if there is a winner
+    boolean isWin() {
+        boolean output = false;
+
+        return output;
+    }
+
+    void takeTurn(int input[]) {
+        if (grid[input[0]][input[1]] == 0) {
+            grid[input[0]][input[1]] = playerTurn + 1;
+        }
+        if (playerTurn == 1) {
+            playerTurn = playerTurn - 1;
+        } else {
+            playerTurn++;
+        }
+    }
+}

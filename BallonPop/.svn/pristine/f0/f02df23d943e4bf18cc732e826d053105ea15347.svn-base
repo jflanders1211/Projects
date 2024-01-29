@@ -1,0 +1,18 @@
+#pragma once
+#include "MyObject.h"
+#include <vector>
+#include <cstddef>
+using namespace std;
+
+class MyObjectList
+{
+public:
+   // Function to move all the objects
+   void MoveObjects();
+
+   // Function to add an object
+   void Add(MyObject* name);
+
+private:
+   vector<MyObject*> objects;
+};
